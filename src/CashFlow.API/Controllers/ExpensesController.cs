@@ -10,7 +10,7 @@ namespace CashFlow.API.Controllers;
 public class ExpensesController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Register([FromBody] RequestRegisteredExpenseJson request)
+    public IActionResult Register([FromBody] RequestRegisterExpenseJson request)
     {
         try
         {
