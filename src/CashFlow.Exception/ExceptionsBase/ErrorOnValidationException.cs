@@ -2,10 +2,10 @@ namespace CashFlow.Exception.ExceptionsBase;
 
 public class ErrorOnValidationException : CashFlowException
 {
-  public List<string> Erros { get; set; }
+  public List<string> Errors { get; set; }
 
   public ErrorOnValidationException(List<string> errorMessages)
   {
-    Erros = errorMessages;
+    Errors = errorMessages;
   }
 }

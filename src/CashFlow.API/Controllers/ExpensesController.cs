@@ -23,7 +23,7 @@ public class ExpensesController : ControllerBase
         }
         catch (ErrorOnValidationException ex)
         {
-            var errorResponse = new ResponseErrorJson(ex.Erros);
+            var errorResponse = new ResponseErrorJson(ex.Errors);
 
             return BadRequest(errorResponse);
         }
