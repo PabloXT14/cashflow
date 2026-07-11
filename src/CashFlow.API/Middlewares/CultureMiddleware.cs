@@ -13,13 +13,18 @@ public class CultureMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var culture = context.Request.Headers.AcceptLanguage.FirstOrDefault();
+        var supportedLanguages = CultureInfo.GetCultures(CultureTypes.AllCultures).ToList();
+
+        var requestedCulture = context.Request.Headers.AcceptLanguage.FirstOrDefault();
 
         var cultureInfo = new CultureInfo("en"); // Default culture/language
 
-        if (!string.IsNullOrWhiteSpace(culture))
+        // Obs: se a primeira condição for falsa, a segunda nem será checada pelo .NET (por conta do &&), evitando assim um processamento desnecessário
+        if (!string.IsNullOrWhiteSpace(requestedCulture)
+            && supportedLanguages.Exists(language => language.Name.Equals(requestedCulture, StringComparison.OrdinalIgnoreCase))
+        )
         {
-            cultureInfo = new CultureInfo(culture);
+            cultureInfo = new CultureInfo(requestedCulture);
         }
 
         CultureInfo.CurrentCulture = cultureInfo;
