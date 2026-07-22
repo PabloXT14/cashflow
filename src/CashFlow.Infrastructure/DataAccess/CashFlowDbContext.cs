@@ -12,7 +12,7 @@ public class CashFlowDbContext : DbContext
     {
         var connectionString = "Server=localhost;Port=3306;Database=cashflow_db;User=cashflow_user;Password=@Password123;";
 
-        var version = new Version(8, 4, 10);
+        var version = new Version(8, 4);
         var serverVersion = new MySqlServerVersion(version);
 
         optionsBuilder.UseMySql(connectionString, serverVersion);
