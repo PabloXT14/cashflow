@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CashFlow.Infrastructure.DataAccess;
 
-public class CashFlowDbContext : DbContext
+internal class CashFlowDbContext : DbContext
 {
     // OBS: O nome da propriedade DbSet deve ser o mesmo nome da tabela no banco de dados (não precisa ser case-sensitive), caso contrário, será necessário configurar o mapeamento no OnModelCreating.
     public DbSet<Expense> Expenses { get; set; }
