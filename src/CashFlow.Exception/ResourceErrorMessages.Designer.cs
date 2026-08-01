@@ -61,4 +61,9 @@ public class ResourceErrorMessages
 	/// Looks up a localized string similar to The amount must be greater than zero..
 	/// </summary>
 	public static string AMOUNT_MUST_BE_GREATER_THAN_ZERO => ResourceManager.GetString("AMOUNT_MUST_BE_GREATER_THAN_ZERO", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Expense not found..
+	/// </summary>
+	public static string EXPENSE_NOT_FOUND => ResourceManager.GetString("EXPENSE_NOT_FOUND", Culture);
 }
