@@ -6,11 +6,11 @@ namespace CashFlow.Application.UseCases.Expenses.GetAll;
 
 public class GetAllExpensesUseCase : IGetAllExpensesUseCase
 {
-    private readonly IExpensesRepository _expensesRepository;
+    private readonly IExpensesReadOnlyRepository _expensesRepository;
     private readonly IMapper _mapper;
 
     public GetAllExpensesUseCase(
-        IExpensesRepository expensesRepository,
+        IExpensesReadOnlyRepository expensesRepository,
         IMapper mapper
     )
     {
