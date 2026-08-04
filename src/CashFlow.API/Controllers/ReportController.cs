@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using CashFlow.Application.UseCases.Expenses.Reports.Excel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CashFlow.API.Controllers;
@@ -11,10 +12,11 @@ public class ReportController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetExcel(
-        [FromHeader] DateOnly month
+        [FromHeader] DateOnly month,
+        [FromServices] IGenerateExpensesReportExcelUseCase useCase
     )
     {
-        byte[] file = new byte[1];
+        byte[] file = await useCase.Execute(month);
 
         if (file.Length > 0)
         {
