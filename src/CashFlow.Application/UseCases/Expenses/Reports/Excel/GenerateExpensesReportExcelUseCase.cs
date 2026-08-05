@@ -17,6 +17,11 @@ public class GenerateExpensesReportExcelUseCase : IGenerateExpensesReportExcelUs
     {
         var expenses = await _expensesRepository.FilterByMonth(month);
 
+        if (expenses.Count == 0)
+        {
+            return [];
+        }
+
         var workbook = new XLWorkbook();
 
         workbook.Author = "Pablo Alan";
