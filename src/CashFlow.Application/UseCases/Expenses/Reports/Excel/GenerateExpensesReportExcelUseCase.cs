@@ -1,3 +1,4 @@
+using CashFlow.Domain.Enums;
 using CashFlow.Domain.Reports;
 using CashFlow.Domain.Repositories.Expenses;
 using ClosedXML.Excel;
@@ -34,11 +35,42 @@ public class GenerateExpensesReportExcelUseCase : IGenerateExpensesReportExcelUs
 
         InsertHeader(worksheet);
 
+        var row = 2; // +2 because the first row is the header and the index starts at 0
+        foreach (var expense in expenses)
+        {
+            worksheet.Cell($"A{row}").Value = expense.Title;
+            worksheet.Cell($"B{row}").Value = expense.Date.ToString("dd/MM/yyyy");
+            worksheet.Cell($"C{row}").Value = ConvertPaymentType(expense.PaymentType);
+            worksheet.Cell($"D{row}").Value = expense.Amount;
+            worksheet.Cell($"E{row}").Value = expense.Description;
+
+
+            worksheet.Cell($"A{row}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell($"B{row}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell($"C{row}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Cell($"D{row}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            worksheet.Cell($"E{row}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+            row++;
+        }
+
         var file = new MemoryStream();
 
         workbook.SaveAs(file);
 
         return file.ToArray();
+    }
+
+    private string ConvertPaymentType(PaymentType paymentType)
+    {
+        return paymentType switch
+        {
+            PaymentType.Cash => ResourceReportGenerationMessages.CASH,
+            PaymentType.DebitCard => ResourceReportGenerationMessages.DEBIT_CARD,
+            PaymentType.CreditCard => ResourceReportGenerationMessages.CREDIT_CARD,
+            PaymentType.ElectronicTransfer => ResourceReportGenerationMessages.ELECTRONIC_TRANSFER,
+            _ => string.Empty
+        };
     }
 
     private void InsertHeader(IXLWorksheet worksheet)

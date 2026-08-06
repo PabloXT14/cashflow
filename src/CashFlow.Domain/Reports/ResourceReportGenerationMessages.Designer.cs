@@ -61,4 +61,24 @@ public class ResourceReportGenerationMessages
 	/// Looks up a localized string similar to Title.
 	/// </summary>
 	public static string TITLE => ResourceManager.GetString("TITLE", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Cash.
+	/// </summary>
+	public static string CASH => ResourceManager.GetString("CASH", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Debit Card.
+	/// </summary>
+	public static string DEBIT_CARD => ResourceManager.GetString("DEBIT_CARD", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Credit Card.
+	/// </summary>
+	public static string CREDIT_CARD => ResourceManager.GetString("CREDIT_CARD", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Electronic Transfer.
+	/// </summary>
+	public static string ELECTRONIC_TRANSFER => ResourceManager.GetString("ELECTRONIC_TRANSFER", Culture);
 }
