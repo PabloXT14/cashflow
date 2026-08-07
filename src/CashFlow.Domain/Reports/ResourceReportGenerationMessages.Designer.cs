@@ -81,4 +81,9 @@ public class ResourceReportGenerationMessages
 	/// Looks up a localized string similar to Electronic Transfer.
 	/// </summary>
 	public static string ELECTRONIC_TRANSFER => ResourceManager.GetString("ELECTRONIC_TRANSFER", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Expenses for.
+	/// </summary>
+	public static string EXPENSES_FOR => ResourceManager.GetString("EXPENSES_FOR", Culture);
 }

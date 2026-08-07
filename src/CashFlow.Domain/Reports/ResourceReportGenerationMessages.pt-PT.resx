@@ -43,4 +43,7 @@
     <data name="ELECTRONIC_TRANSFER" xml:space="preserve">
         <value>Transferência Eletrónica</value>
     </data>
+    <data name="EXPENSES_FOR" xml:space="preserve">
+        <value>Despesas de</value>
+    </data>
 </root>

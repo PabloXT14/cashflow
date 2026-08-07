@@ -43,4 +43,7 @@
     <data name="ELECTRONIC_TRANSFER" xml:space="preserve">
         <value>Virement électronique</value>
     </data>
+    <data name="EXPENSES_FOR" xml:space="preserve">
+        <value>Dépenses pour</value>
+    </data>
 </root>
