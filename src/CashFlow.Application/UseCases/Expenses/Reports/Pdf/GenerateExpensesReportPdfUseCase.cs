@@ -30,6 +30,30 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         var document = CreateDocument(month);
         var page = CreatePage(document);
 
+        var paragraph = page.AddParagraph();
+
+        // string.Format replace a character in a string with another string, in this case, it replaces {0} with the month format. But you can add as many parameters as you want, and it will replace {1}, {2}, etc. with the corresponding parameter.
+        var title = string.Format(
+            ResourceReportGenerationMessages.TOTAL_SPENT_IN,
+            month.ToString("Y")
+        );
+
+        paragraph.AddFormattedText(title, new Font
+        {
+            Name = FontHelper.RALEWAY_REGULAR,
+            Size = 15,
+        });
+
+        paragraph.AddLineBreak();
+
+
+        var totalExpenses = expenses.Sum(expense => expense.Amount);
+        paragraph.AddFormattedText($"{CURRENCY_SYMBOL} {totalExpenses:F2}", new Font
+        {
+            Name = FontHelper.WORKSANS_BLACK,
+            Size = 50,
+        });
+
         return [];
     }
 
