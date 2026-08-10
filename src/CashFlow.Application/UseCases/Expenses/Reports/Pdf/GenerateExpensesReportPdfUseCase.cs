@@ -1,3 +1,4 @@
+using System.Reflection;
 using CashFlow.Application.UseCases.Expenses.Reports.Pdf.Fonts;
 using CashFlow.Domain.Reports;
 using CashFlow.Domain.Repositories.Expenses;
@@ -32,50 +33,10 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         var document = CreateDocument(month);
         var page = CreatePage(document);
 
-        var table = page.AddTable();
-        // Add 2 columns
-        table.AddColumn();
-        table.AddColumn("300"); // Set the width of the second column to 300 pixels
-
-        var row = table.AddRow();
-
-        row.Cells[0].AddImage("/home/pabloalan/Documents/Personal/04_redes-sociais/profile-zoom.png").Width = 62;
-
-        row.Cells[1].AddParagraph("Hey, Pablo Alan");
-        row.Cells[1].Format.Font = new Font
-        {
-            Name = FontHelper.RALEWAY_BLACK,
-            Size = 16,
-        };
-        row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
-
-
-
-        var paragraph = page.AddParagraph();
-        paragraph.Format.SpaceBefore = "40";
-        paragraph.Format.SpaceAfter = "40";
-
-        // string.Format replace a character in a string with another string, in this case, it replaces {0} with the month format. But you can add as many parameters as you want, and it will replace {1}, {2}, etc. with the corresponding parameter.
-        var title = string.Format(
-            ResourceReportGenerationMessages.TOTAL_SPENT_IN,
-            month.ToString("Y")
-        );
-
-        paragraph.AddFormattedText(title, new Font
-        {
-            Name = FontHelper.RALEWAY_REGULAR,
-            Size = 15,
-        });
-
-        paragraph.AddLineBreak();
-
+        CreateHeaderWithProfilePhotoAndName(page);
 
         var totalExpenses = expenses.Sum(expense => expense.Amount);
-        paragraph.AddFormattedText($"{CURRENCY_SYMBOL} {totalExpenses:F2}", new Font
-        {
-            Name = FontHelper.WORKSANS_BLACK,
-            Size = 50,
-        });
+        CreateTotalSpentSection(page, month, totalExpenses);
 
         return RenderDocument(document);
     }
@@ -106,6 +67,57 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         section.PageSetup.RightMargin = 40;
 
         return section;
+    }
+
+    private void CreateHeaderWithProfilePhotoAndName(Section page)
+    {
+        var table = page.AddTable();
+        // Add 2 columns
+        table.AddColumn();
+        table.AddColumn("300"); // Set the width of the second column to 300 pixels
+
+        var row = table.AddRow();
+
+        var assembly = Assembly.GetExecutingAssembly();
+        var directoryName = Path.GetDirectoryName(assembly.Location);
+        var filePath = Path.Combine(directoryName!, "Assets", "profile.png");
+
+        row.Cells[0].AddImage(filePath).Width = 62;
+
+        row.Cells[1].AddParagraph("Hey, Pablo Alan");
+        row.Cells[1].Format.Font = new Font
+        {
+            Name = FontHelper.RALEWAY_BLACK,
+            Size = 16,
+        };
+        row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
+    }
+
+    private void CreateTotalSpentSection(Section page, DateOnly month, decimal totalExpenses)
+    {
+        var paragraph = page.AddParagraph();
+        paragraph.Format.SpaceBefore = "40";
+        paragraph.Format.SpaceAfter = "40";
+
+        // string.Format replace a character in a string with another string, in this case, it replaces {0} with the month format. But you can add as many parameters as you want, and it will replace {1}, {2}, etc. with the corresponding parameter.
+        var title = string.Format(
+            ResourceReportGenerationMessages.TOTAL_SPENT_IN,
+            month.ToString("Y")
+        );
+
+        paragraph.AddFormattedText(title, new Font
+        {
+            Name = FontHelper.RALEWAY_REGULAR,
+            Size = 15,
+        });
+
+        paragraph.AddLineBreak();
+
+        paragraph.AddFormattedText($"{CURRENCY_SYMBOL} {totalExpenses:F2}", new Font
+        {
+            Name = FontHelper.WORKSANS_BLACK,
+            Size = 50,
+        });
     }
 
     private byte[] RenderDocument(Document document)
