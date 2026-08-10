@@ -2,6 +2,7 @@ using CashFlow.Application.UseCases.Expenses.Reports.Pdf.Fonts;
 using CashFlow.Domain.Reports;
 using CashFlow.Domain.Repositories.Expenses;
 using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using PdfSharp.Fonts;
 
@@ -34,7 +35,7 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         var table = page.AddTable();
         // Add 2 columns
         table.AddColumn();
-        table.AddColumn();
+        table.AddColumn("300"); // Set the width of the second column to 300 pixels
 
         var row = table.AddRow();
 
@@ -46,10 +47,13 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
             Name = FontHelper.RALEWAY_BLACK,
             Size = 16,
         };
+        row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
 
 
 
         var paragraph = page.AddParagraph();
+        paragraph.Format.SpaceBefore = "40";
+        paragraph.Format.SpaceAfter = "40";
 
         // string.Format replace a character in a string with another string, in this case, it replaces {0} with the month format. But you can add as many parameters as you want, and it will replace {1}, {2}, etc. with the corresponding parameter.
         var title = string.Format(
