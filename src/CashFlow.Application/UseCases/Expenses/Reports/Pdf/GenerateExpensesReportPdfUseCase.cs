@@ -31,6 +31,24 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         var document = CreateDocument(month);
         var page = CreatePage(document);
 
+        var table = page.AddTable();
+        // Add 2 columns
+        table.AddColumn();
+        table.AddColumn();
+
+        var row = table.AddRow();
+
+        row.Cells[0].AddImage("/home/pabloalan/Documents/Personal/04_redes-sociais/profile-zoom.png").Width = 62;
+
+        row.Cells[1].AddParagraph("Hey, Pablo Alan");
+        row.Cells[1].Format.Font = new Font
+        {
+            Name = FontHelper.RALEWAY_BLACK,
+            Size = 16,
+        };
+
+
+
         var paragraph = page.AddParagraph();
 
         // string.Format replace a character in a string with another string, in this case, it replaces {0} with the month format. But you can add as many parameters as you want, and it will replace {1}, {2}, etc. with the corresponding parameter.
