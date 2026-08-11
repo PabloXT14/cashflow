@@ -38,6 +38,11 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         var totalExpenses = expenses.Sum(expense => expense.Amount);
         CreateTotalSpentSection(page, month, totalExpenses);
 
+        foreach (var expense in expenses)
+        {
+            var table = CreateExpenseTable(page);
+        }
+
         return RenderDocument(document);
     }
 
@@ -118,6 +123,19 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
             Name = FontHelper.WORKSANS_BLACK,
             Size = 50,
         });
+    }
+
+    private Table CreateExpenseTable(Section page)
+    {
+        var table = page.AddTable();
+
+        // ADD COLUMNS
+        table.AddColumn("195").Format.Alignment = ParagraphAlignment.Left;
+        table.AddColumn("80").Format.Alignment = ParagraphAlignment.Center;
+        table.AddColumn("120").Format.Alignment = ParagraphAlignment.Center;
+        table.AddColumn("120").Format.Alignment = ParagraphAlignment.Right;
+
+        return table;
     }
 
     private byte[] RenderDocument(Document document)
