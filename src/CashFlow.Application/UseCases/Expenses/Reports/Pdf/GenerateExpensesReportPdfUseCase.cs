@@ -1,4 +1,5 @@
 using System.Reflection;
+using CashFlow.Application.UseCases.Expenses.Reports.Pdf.Colors;
 using CashFlow.Application.UseCases.Expenses.Reports.Pdf.Fonts;
 using CashFlow.Domain.Reports;
 using CashFlow.Domain.Repositories.Expenses;
@@ -41,6 +42,38 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         foreach (var expense in expenses)
         {
             var table = CreateExpenseTable(page);
+
+            var row = table.AddRow();
+            row.Height = 25;
+
+            // TITLE CELL
+            row.Cells[0].AddParagraph(expense.Title);
+            row.Cells[0].Format.Font = new Font
+            {
+                Name = FontHelper.RALEWAY_BLACK,
+                Size = 14,
+                Color = ColorsHelper.BLACK
+            };
+            row.Cells[0].Shading.Color = ColorsHelper.RED_LIGHT;
+            row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
+            row.Cells[0].MergeRight = 2; // Merge the first cell with the next two cells
+            row.Cells[0].Format.LeftIndent = 20; // Add left indent to the merged cell
+
+            // AMOUNT CELL
+            row.Cells[3].AddParagraph(ResourceReportGenerationMessages.AMOUNT);
+            row.Cells[3].Format.Font = new Font
+            {
+                Name = FontHelper.RALEWAY_BLACK,
+                Size = 14,
+                Color = ColorsHelper.WHITE
+            };
+            row.Cells[3].Shading.Color = ColorsHelper.RED_DARK;
+            row.Cells[3].VerticalAlignment = VerticalAlignment.Center;
+
+            // BOTTOM SPACING
+            var bottomSpacingRow = table.AddRow();
+            bottomSpacingRow.Height = 30;
+            bottomSpacingRow.Borders.Visible = false;
         }
 
         return RenderDocument(document);
