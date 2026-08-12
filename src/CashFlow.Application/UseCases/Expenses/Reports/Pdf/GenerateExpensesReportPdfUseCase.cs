@@ -1,6 +1,7 @@
 using System.Reflection;
 using CashFlow.Application.UseCases.Expenses.Reports.Pdf.Colors;
 using CashFlow.Application.UseCases.Expenses.Reports.Pdf.Fonts;
+using CashFlow.Domain.Extensions;
 using CashFlow.Domain.Reports;
 using CashFlow.Domain.Repositories.Expenses;
 using MigraDoc.DocumentObjectModel;
@@ -13,6 +14,7 @@ namespace CashFlow.Application.UseCases.Expenses.Reports.Pdf;
 public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCase
 {
     private const string CURRENCY_SYMBOL = "R$";
+    private const int HEIGHT_ROW_EXPENSE_TABLE = 25;
     private readonly IExpensesReadOnlyRepository _expensesRepository;
 
     public GenerateExpensesReportPdfUseCase(IExpensesReadOnlyRepository expensesRepository)
@@ -44,80 +46,31 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
             var table = CreateExpenseTable(page);
 
             var row = table.AddRow();
-            row.Height = 25;
+            row.Height = HEIGHT_ROW_EXPENSE_TABLE;
 
-            // TITLE CELL
-            row.Cells[0].AddParagraph(expense.Title);
-            row.Cells[0].Format.Font = new Font
-            {
-                Name = FontHelper.RALEWAY_BLACK,
-                Size = 14,
-                Color = ColorsHelper.BLACK
-            };
-            row.Cells[0].Shading.Color = ColorsHelper.RED_LIGHT;
-            row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
-            row.Cells[0].MergeRight = 2; // Merge the first cell with the next two cells
-            row.Cells[0].Format.LeftIndent = 20; // Add left indent to the merged cell
+            AddExpenseTitle(row.Cells[0], expense.Title);
 
-            // AMOUNT CELL
-            row.Cells[3].AddParagraph(ResourceReportGenerationMessages.AMOUNT);
-            row.Cells[3].Format.Font = new Font
-            {
-                Name = FontHelper.RALEWAY_BLACK,
-                Size = 14,
-                Color = ColorsHelper.WHITE
-            };
-            row.Cells[3].Shading.Color = ColorsHelper.RED_DARK;
-            row.Cells[3].VerticalAlignment = VerticalAlignment.Center;
+            AddHeaderForAmount(row.Cells[3]);
 
 
             // SECOND ROW
             row = table.AddRow();
-            row.Height = 25;
+            row.Height = HEIGHT_ROW_EXPENSE_TABLE;
 
+
+            SetStyleBaseForExpenseInformation(row.Cells[0]);
             row.Cells[0].AddParagraph(expense.Date.ToString("D"));
-            row.Cells[0].Format.Font = new Font
-            {
-                Name = FontHelper.WORKSANS_REGULAR,
-                Size = 12,
-                Color = ColorsHelper.BLACK
-            };
-            row.Cells[0].Shading.Color = ColorsHelper.GREEN_DARK;
-            row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
             row.Cells[0].Format.LeftIndent = 20;
 
+            SetStyleBaseForExpenseInformation(row.Cells[1]);
             row.Cells[1].AddParagraph(expense.Date.ToString("t"));
-            row.Cells[1].Format.Font = new Font
-            {
-                Name = FontHelper.WORKSANS_REGULAR,
-                Size = 12,
-                Color = ColorsHelper.BLACK
-            };
-            row.Cells[1].Shading.Color = ColorsHelper.GREEN_DARK;
-            row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
 
+            SetStyleBaseForExpenseInformation(row.Cells[2]);
+            row.Cells[2].AddParagraph(expense.PaymentType.PaymentTypeToString());
 
+            AddAmountForExpense(row.Cells[3], expense.Amount);
 
-            row.Cells[3].AddParagraph($"-{CURRENCY_SYMBOL} {expense.Amount:F2}");
-            row.Cells[3].Format.Font = new Font
-            {
-                Name = FontHelper.WORKSANS_REGULAR,
-                Size = 14,
-                Color = ColorsHelper.BLACK
-            };
-            row.Cells[3].Shading.Color = ColorsHelper.WHITE;
-            row.Cells[3].VerticalAlignment = VerticalAlignment.Center;
-
-
-
-
-
-
-
-            // BOTTOM SPACING
-            var bottomSpacingRow = table.AddRow();
-            bottomSpacingRow.Height = 30;
-            bottomSpacingRow.Borders.Visible = false;
+            AddWhiteSpace(table);
         }
 
         return RenderDocument(document);
@@ -213,6 +166,66 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         table.AddColumn("120").Format.Alignment = ParagraphAlignment.Right;
 
         return table;
+    }
+
+    private void AddExpenseTitle(Cell cell, string expenseTitle)
+    {
+        cell.AddParagraph(expenseTitle);
+        cell.Format.Font = new Font
+        {
+            Name = FontHelper.RALEWAY_BLACK,
+            Size = 14,
+            Color = ColorsHelper.BLACK
+        };
+        cell.Shading.Color = ColorsHelper.RED_LIGHT;
+        cell.VerticalAlignment = VerticalAlignment.Center;
+        cell.MergeRight = 2; // Merge the first cell with the next two cells
+        cell.Format.LeftIndent = 20; // Add left indent to the merged cell
+    }
+
+    private void AddHeaderForAmount(Cell cell)
+    {
+        cell.AddParagraph(ResourceReportGenerationMessages.AMOUNT);
+        cell.Format.Font = new Font
+        {
+            Name = FontHelper.RALEWAY_BLACK,
+            Size = 14,
+            Color = ColorsHelper.WHITE
+        };
+        cell.Shading.Color = ColorsHelper.RED_DARK;
+        cell.VerticalAlignment = VerticalAlignment.Center;
+    }
+
+    private void SetStyleBaseForExpenseInformation(Cell cell)
+    {
+        cell.Format.Font = new Font
+        {
+            Name = FontHelper.WORKSANS_REGULAR,
+            Size = 12,
+            Color = ColorsHelper.BLACK
+        };
+        cell.Shading.Color = ColorsHelper.GREEN_DARK;
+        cell.VerticalAlignment = VerticalAlignment.Center;
+    }
+
+    private void AddAmountForExpense(Cell cell, decimal amount)
+    {
+        cell.AddParagraph($"-{CURRENCY_SYMBOL} {amount:F2}");
+        cell.Format.Font = new Font
+        {
+            Name = FontHelper.WORKSANS_REGULAR,
+            Size = 14,
+            Color = ColorsHelper.BLACK
+        };
+        cell.Shading.Color = ColorsHelper.WHITE;
+        cell.VerticalAlignment = VerticalAlignment.Center;
+    }
+
+    private void AddWhiteSpace(Table table)
+    {
+        var row = table.AddRow();
+        row.Height = 30;
+        row.Borders.Visible = false;
     }
 
     private byte[] RenderDocument(Document document)
