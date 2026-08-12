@@ -70,6 +70,28 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
 
             AddAmountForExpense(row.Cells[3], expense.Amount);
 
+            // THIRD ROW
+            if (!string.IsNullOrWhiteSpace(expense.Description))
+            {
+                var descriptionRow = table.AddRow();
+                descriptionRow.Height = HEIGHT_ROW_EXPENSE_TABLE;
+
+                descriptionRow.Cells[0].AddParagraph(expense.Description);
+
+                descriptionRow.Cells[0].Format.Font = new Font
+                {
+                    Name = FontHelper.WORKSANS_REGULAR,
+                    Size = 10,
+                    Color = ColorsHelper.BLACK
+                };
+                descriptionRow.Cells[0].Shading.Color = ColorsHelper.GREEN_LIGHT;
+                descriptionRow.Cells[0].VerticalAlignment = VerticalAlignment.Center;
+                descriptionRow.Cells[0].MergeRight = 2; // Merge the first cell with the next two cells
+                descriptionRow.Cells[0].Format.LeftIndent = 20; // Add left indent to the merged cell
+
+                row.Cells[3].MergeDown = 1; // Merge the amount cell with the description row
+            }
+
             AddWhiteSpace(table);
         }
 
