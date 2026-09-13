@@ -2,6 +2,7 @@ using CashFlow.API.Filters;
 using CashFlow.API.Middlewares;
 using CashFlow.Application;
 using CashFlow.Infrastructure;
+using CashFlow.Infrastructure.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,4 +39,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+await MigrateDatabase();
+
 app.Run();
+
+async Task MigrateDatabase()
+{
+    // Create a scope to get the required services for database migration and work the dependency injection (obs: in api controller/request context the scope is created automatically, but here we are outside of the request context, so we need to create a scope manually)
+    await using var scope = app.Services.CreateAsyncScope();
+
+    await DatabaseMigration.MigrateDatabase(scope.ServiceProvider);
+}
