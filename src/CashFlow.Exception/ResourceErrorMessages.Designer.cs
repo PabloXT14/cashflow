@@ -66,4 +66,24 @@ public class ResourceErrorMessages
 	/// Looks up a localized string similar to Expense not found..
 	/// </summary>
 	public static string EXPENSE_NOT_FOUND => ResourceManager.GetString("EXPENSE_NOT_FOUND", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to Your password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number..
+	/// </summary>
+	public static string INVALID_PASSWORD => ResourceManager.GetString("INVALID_PASSWORD", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to The name cannot be empty..
+	/// </summary>
+	public static string NAME_EMPTY => ResourceManager.GetString("NAME_EMPTY", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to The email cannot be empty..
+	/// </summary>
+	public static string EMAIL_EMPTY => ResourceManager.GetString("EMAIL_EMPTY", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to The email is invalid..
+	/// </summary>
+	public static string EMAIL_INVALID => ResourceManager.GetString("EMAIL_INVALID", Culture);
 }
