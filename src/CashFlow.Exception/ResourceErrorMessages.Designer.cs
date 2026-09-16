@@ -86,4 +86,9 @@ public class ResourceErrorMessages
 	/// Looks up a localized string similar to The email is invalid..
 	/// </summary>
 	public static string EMAIL_INVALID => ResourceManager.GetString("EMAIL_INVALID", Culture);
+	
+	/// <summary>
+	/// Looks up a localized string similar to This email is already in use..
+	/// </summary>
+	public static string EMAIL_ALREADY_REGISTERED => ResourceManager.GetString("EMAIL_ALREADY_REGISTERED", Culture);
 }
