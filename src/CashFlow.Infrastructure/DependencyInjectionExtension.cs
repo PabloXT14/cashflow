@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using CashFlow.Domain.Repositories;
 using CashFlow.Domain.Security.Cryptography;
 using CashFlow.Domain.Repositories.User;
+using CashFlow.Domain.Tokens;
+using CashFlow.Infrastructure.Security.Tokens;
 
 namespace CashFlow.Infrastructure;
 
@@ -17,11 +19,23 @@ public static class DependencyInjectionExtension
     {
         AddDbContext(services, configuration);
         AddRepositories(services);
+        AddTokens(services, configuration);
 
         services.AddScoped<IPasswordEncripter, Security.Cryptography.BCrypt>();
     }
 
-    public static void AddRepositories(IServiceCollection services)
+    private static void AddTokens(IServiceCollection services, IConfiguration configuration)
+    {
+        var signingKey = configuration.GetValue<string>("Settings:Jwt:SigningKey");
+        var expirationTimeMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpiresMinutes");
+
+        services.AddScoped<IAccessTokenGenerator>(config => new JwtTokenGenerator(
+            signingKey!,
+            expirationTimeMinutes
+        ));
+    }
+
+    private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -33,7 +47,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
     }
 
-    public static void AddDbContext(IServiceCollection services, IConfiguration configuration)
+    private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Connection");
 
