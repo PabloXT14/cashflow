@@ -6,13 +6,35 @@ using CashFlow.Infrastructure;
 using CashFlow.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(config =>
+{
+    const string schemeId = "Bearer";
+
+    // Add JWT Bearer token authentication option to Swagger
+    config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = @"JWT Authorization header using the Bearer scheme.
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      Example: 'Bearer 12345abcdef'",
+        In = ParameterLocation.Header,
+        Scheme = schemeId,
+        Type = SecuritySchemeType.ApiKey,
+    });
+
+    // Add a security requirement to Swagger that requires the Bearer token for all endpoints
+    config.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference(schemeId, document)] = []
+    });
+});
 
 builder.Services.AddMvc(options =>
 {
