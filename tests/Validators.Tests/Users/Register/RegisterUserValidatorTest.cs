@@ -66,4 +66,44 @@ public class RegisterUserValidatorTest
             errors => errors.ShouldContain(error => error.ErrorMessage.Equals(ResourceErrorMessages.EMAIL_EMPTY))
         );
     }
+
+    [Fact]
+    public void Error_Email_Invalid()
+    {
+        // Arrange
+        var validator = new RegisterUserValidator();
+        var request = RequestRegisterUserJsonBuilder.Build();
+
+        request.Email = "invalid-email.com";
+
+        // Act
+        var result = validator.Validate(request);
+
+        // Assert
+        result.IsValid.ShouldBeFalse();
+        result.Errors.ShouldSatisfyAllConditions(
+            errors => errors.Count.ShouldBe(1),
+            errors => errors.ShouldContain(error => error.ErrorMessage.Equals(ResourceErrorMessages.EMAIL_INVALID))
+        );
+    }
+
+    [Fact]
+    public void Error_Password_Empty()
+    {
+        // Arrange
+        var validator = new RegisterUserValidator();
+        var request = RequestRegisterUserJsonBuilder.Build();
+
+        request.Password = "";
+
+        // Act
+        var result = validator.Validate(request);
+
+        // Assert
+        result.IsValid.ShouldBeFalse();
+        result.Errors.ShouldSatisfyAllConditions(
+            errors => errors.Count.ShouldBe(1),
+            errors => errors.ShouldContain(error => error.ErrorMessage.Equals(ResourceErrorMessages.INVALID_PASSWORD))
+        );
+    }
 }
