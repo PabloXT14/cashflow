@@ -1,4 +1,6 @@
 using CashFlow.Application.UseCases.User.Register;
+using CommonTestUtilities.Mapper;
+using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using Shouldly;
 
@@ -26,6 +28,17 @@ public class RegisterUserUseCaseTest
 
     private RegisterUserUseCase CreateUseCase()
     {
-        return new RegisterUserUseCase();
+        var mapper = MapperBuilder.Build();
+        var unitOfWork = UnitOfWorkBuilder.Build();
+        var userWriteOnlyRepository = UserWriteOnlyRepositoryBuilder.Build();
+
+        return new RegisterUserUseCase(
+            mapper,
+            null,
+            null,
+            userWriteOnlyRepository,
+            unitOfWork,
+            null
+        );
     }
 }
