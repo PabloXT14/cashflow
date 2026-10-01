@@ -12,6 +12,14 @@ public class UserReadOnlyRepositoryBuilder
         _repository = new Mock<IUserReadOnlyRepository>();
     }
 
+    public void ExistsActiveUserWithEmail(string email)
+    {
+        // Just return true if the email is not null or whitespace, otherwise return false, other wise will can also use a fixed email to only return true if the email is the same as the fixed one
+        _repository
+            .Setup(userReadOnly => userReadOnly.ExistsActiveUserWithEmail(email))
+            .ReturnsAsync(true);
+    }
+
     public IUserReadOnlyRepository Build()
     {
         return _repository.Object;
