@@ -1,3 +1,4 @@
+using CashFlow.Domain.Entities;
 using CashFlow.Domain.Repositories.User;
 using Moq;
 
@@ -18,6 +19,15 @@ public class UserReadOnlyRepositoryBuilder
         _repository
             .Setup(userReadOnly => userReadOnly.ExistsActiveUserWithEmail(email))
             .ReturnsAsync(true);
+    }
+
+    public UserReadOnlyRepositoryBuilder GetUserByEmail(User user)
+    {
+        _repository
+            .Setup(userReadOnly => userReadOnly.GetUserByEmail(user.Email))
+            .ReturnsAsync(user);
+
+        return this;
     }
 
     public IUserReadOnlyRepository Build()
